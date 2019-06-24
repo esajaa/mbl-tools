@@ -22,6 +22,10 @@
     {% include "shared/actions/enable-wifi.yaml" %}
 {% endmacro %}
 
+{% macro enable_cellular(venv_name) %}
+    {% include "shared/actions/enable-cellular.yaml" %}
+{% endmacro %}
+
 {% macro restart_mbl_cloud_client() %}
     {% include "shared/actions/restart-mbl-cloud-client.yaml" %}
 {% endmacro %}
