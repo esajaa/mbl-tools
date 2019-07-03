@@ -4,10 +4,9 @@
 {% set lxc_creation = true %}
 {% set lxc_name = "cellular-lxc" %}
 
-{% set _ = tags.update({"imx7d-pico-mbl": ["cellular", "external_antenna"]}) %}
-{% set _ = tags.update({"imx7d-pico-mbl": ["cellular"]}) %}
-{% set _ = tags.update({"bcm2837-rpi-3-b-plus-32": ["cellular"]}) %}
-{% set _ = tags.update({"bcm2837-rpi-3-b-32": ["cellular"]}) %}
+{% set _ = tags.update({"imx7d-pico-mbl": ["cellular_shield", "external_antenna"]}) %}
+{% set _ = tags.update({"bcm2837-rpi-3-b-plus-32": ["cellular_shield"]}) %}
+{% set _ = tags.update({"bcm2837-rpi-3-b-32": ["cellular_shield"]}) %}
 
 {% block testplan %}
 - test:
@@ -21,7 +20,7 @@
 
     {{ macros.enable_wifi(venv_name) | indent }}
 
-    {{ macros.enable_cellular(venv_name) | indent }}
+    {{ macros.activate_cellular(venv_name) | indent }}
 
     - path: ci/lava/tests/cellular-and-wifi.yaml
       repository: https://github.com/ARMmbed/mbl-core.git

@@ -18,6 +18,8 @@
 
     {{ macros.enable_wifi(venv_name) | indent }}
 
+    {{ macros.deactivate_cellular(venv_name) | indent }}
+
     - path: ci/lava/tests/wired-and-wifi.yaml
       repository: https://github.com/ARMmbed/mbl-core.git
       name: wired_wifi_tests

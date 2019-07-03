@@ -22,8 +22,18 @@
     {% include "shared/actions/enable-wifi.yaml" %}
 {% endmacro %}
 
-{% macro enable_cellular(venv_name) %}
-    {% include "shared/actions/enable-cellular.yaml" %}
+{% macro activate_cellular(venv_name) %}
+    {% set action = "activate" %}
+    {% set check_results = "true" %}
+    {% set cellular_name = "activate_cellular" %}
+    {% include "shared/actions/control-cellular.yaml" %}
+{% endmacro %}
+
+{% macro deactivate_cellular(venv_name) %}
+    {% set action = "deactivate" %}
+    {% set check_results = "false" %}
+    {% set cellular_name = "deactivate_cellular" %}
+    {% include "shared/actions/control-cellular.yaml" %}
 {% endmacro %}
 
 {% macro restart_mbl_cloud_client() %}
