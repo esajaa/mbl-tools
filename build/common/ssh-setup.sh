@@ -24,7 +24,7 @@ extra_hosts="$*"
 mkdir -p ~/.ssh
 chmod 700 ~/.ssh
 touch ~/.ssh/known_hosts
-chmod 600 ~/.ssh/known_hosts
+chmod 600 ~/.ssh/*
 for host in $hosts $extra_hosts; do
     if ! ssh-keygen -F "$host" > /dev/null; then
         ssh-keyscan -H "$host" >> ~/.ssh/known_hosts

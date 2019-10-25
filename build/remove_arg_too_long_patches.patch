@@ -1,0 +1,23 @@
+--- meta-mbl-apps/recipes-connectivity/mbl-cloud-client/mbl-cloud-client.bb	2019-09-26 14:19:53.477559294 +0300
++++ meta-mbl-apps/recipes-connectivity/mbl-cloud-client/mbl-cloud-client.bb	2019-10-04 09:43:55.233666124 +0300
+@@ -19,10 +19,7 @@ SRC_URI_COMMON = "file://yocto-toolchain
+ 
+ # specific sources for the mbl-cloud-client public version
+ SRC_URI_MBL_CLOUD_CLIENT_PUBLIC = "${SRC_URI_MBL_CORE_REPO} \
+-  file://arg_too_long_fix_1.patch;patchdir=${S} \
+-  file://arg_too_long_fix_2.patch;patchdir=${S}/cloud-services/mbl-cloud-client/mbed-cloud-client \
+   file://linux-paths-update-client-pal-filesystem.patch;patchdir=${S}/cloud-services/mbl-cloud-client/mbed-cloud-client \
+-  file://check-min-pthread-stack-size.patch;patchdir=${S}/cloud-services/mbl-cloud-client/mbed-cloud-client \
+   "
+ 
+ # all sources for the mbl-cloud-client public version
+@@ -115,7 +112,8 @@ do_configure() {
+           -DROOTFS1_LABEL="${MBL_ROOT_LABEL}1" \
+           -DROOTFS2_LABEL="${MBL_ROOT_LABEL}2" \
+           -DROOTFS_TYPE="${MBL_ROOT_FSTYPE}" \
+-          -DFACTORY_CONFIG_PARTITION="${MBL_FACTORY_CONFIG_DIR}"
++          -DFACTORY_CONFIG_PARTITION="${MBL_FACTORY_CONFIG_DIR}" \
++          -DDISABLE_PAL_TESTS="1"
+ 
+     cd ${CUR_DIR}
+ }
