@@ -1,0 +1,10 @@
+--- meta-mbl-apps/recipes-connectivity/mbl-cloud-client/mbl-cloud-client.bb	2019-09-26 14:19:53.477559294 +0300
++++ meta-mbl-apps/recipes-connectivity/mbl-cloud-client/mbl-cloud-client.bb	2019-09-26 14:33:22.387156621 +0300
+@@ -85,6 +85,7 @@ do_setup_pal_env() {
+ 
+     # Clean the old build directory
+     rm -rf "__${TARGET}"
++    echo "REPLACE_WITH_REPOSITORY_NAME" > mbed-cloud-client.lib
+     mbed deploy --protocol ssh
+     python ./pal-platform/pal-platform.py -v deploy --target="${TARGET}" generate
+     cd ${CUR_DIR}

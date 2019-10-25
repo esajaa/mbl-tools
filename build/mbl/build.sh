@@ -944,6 +944,9 @@ while true; do
     ;;
 
   setup)
+    patch $builddir/machine-$machine/mbl-manifest/layers/meta-mbl/meta-mbl-apps/recipes-connectivity/mbl-cloud-client/mbl-cloud-client.bb $execdir/use_internal_master.patch
+    patch $builddir/machine-$machine/mbl-manifest/layers/meta-mbl/meta-mbl-apps/recipes-connectivity/mbl-cloud-client/mbl-cloud-client.bb $execdir/remove_arg_too_long_patches.patch
+
     for machine in $machines; do
       (cd "$builddir/machine-$machine/mbl-manifest"
        export_eula_env_vars "${machine}"
@@ -1161,6 +1164,7 @@ while true; do
       fi
 
     fi
+    cp -aR /build/artifacts/* /cache/artifacts
     ;;
 
   interactive)

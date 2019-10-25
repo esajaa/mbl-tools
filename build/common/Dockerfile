@@ -58,12 +58,17 @@ RUN mkdir -p /dev/net \
     && mknod /dev/net/tun c 10 200 \
     && chmod 600 /dev/net/tun
 
+RUN mkdir /home/builder && useradd -u 1000 -d /home/builder builder && chown builder /home/builder
+RUN mkdir -p /build/artifacts && mkdir -p /build/downloads && chown 1000:1000 -R /build
+VOLUME /build
+
 # Scripts used to build mbed-linux image
 COPY common/git-setup.sh common/ssh-setup.sh \
      templates/README.binary_release_template \
      templates/Licensing_and_Acknowledgment.template_nxp \
      license-report ./
 COPY mbl/build.sh ./
+COPY use_internal_master.patch remove_arg_too_long_patches.patch ./
 
 # Scripts used to build poky-psa image
 COPY poky-test/build-poky.py \
