@@ -409,3 +409,6 @@ docker run --rm -i $flag_tty \
 
 cp -aR /cache/artifacts/* "$builddir"/artifacts
 rm -rf /cache/artifacts
+
+cp -aR /cache/mbl-manifest "$builddir"
+rm -rf /cache/mbl-manifest

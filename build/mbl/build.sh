@@ -1165,6 +1165,7 @@ while true; do
 
     fi
     cp -aR /build/artifacts/* /cache/artifacts
+    cp -aR /build/mbl-manifest /cache
     ;;
 
   interactive)
