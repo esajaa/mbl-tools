@@ -58,7 +58,6 @@ RUN mkdir -p /dev/net \
     && mknod /dev/net/tun c 10 200 \
     && chmod 600 /dev/net/tun
 
-RUN mkdir /home/builder && useradd -u 1000 -d /home/builder builder && chown builder /home/builder
 RUN mkdir -p /build/artifacts && mkdir -p /build/downloads && chown 1000:1000 -R /build
 VOLUME /build
 

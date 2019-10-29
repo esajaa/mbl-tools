@@ -393,9 +393,9 @@ docker run --rm -i $flag_tty \
        --name "$default_containername" \
        -e LOCAL_UID="$(id -u)" -e LOCAL_GID="$(id -g)" \
        -e SSH_AUTH_SOCK="$SSH_AUTH_SOCK" \
-       -v "$(dirname "$SSH_AUTH_SOCK"):$(dirname "$SSH_AUTH_SOCK")" \
-       -v "$builddir"/artifacts:/build/artifacts \
        -v "$builddir"/downloads:/build/downloads \
+       -v "$builddir"/artifacts:/build/artifacts \
+       -v "$(dirname "$SSH_AUTH_SOCK"):$(dirname "$SSH_AUTH_SOCK")" \
        -v "$builddir"/src:/build/src \
        ${privileged_arg} \
        "$imagename" \
