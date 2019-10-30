@@ -18,7 +18,7 @@ set -u
 # We need a username, but it doesn't matter what the name is, we only
 # care that uid/gid are anchored correctly.
 
-username="builder"
+username="user"
 
 # These environment variables are typically set by
 # docker run -e LOCAL_UID=$(id -u) -e LOCAL_GID=$(id -g)
@@ -56,8 +56,8 @@ fi
 
 export HOME=/home/"$username"
 
-chown 1000:1000 -R /build
 mkdir /cache/artifacts
-chown 1000:1000 /cache/artifacts
+chown $LOCAL_UID:$LOCAL_GID /cache/artifacts
+chown $LOCAL_UID:$LOCAL_GID -R /build
 
-exec gosu builder "$@"
+exec gosu "$LOCAL_UID:$LOCAL_GID" "$@"
