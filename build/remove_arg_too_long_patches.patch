@@ -11,7 +11,7 @@
    "
  
  # all sources for the mbl-cloud-client public version
-@@ -115,7 +112,8 @@ do_configure() {
+@@ -141,7 +139,8 @@ do_configure() {
            -DROOTFS1_LABEL="${MBL_ROOT_LABEL}1" \
            -DROOTFS2_LABEL="${MBL_ROOT_LABEL}2" \
            -DROOTFS_TYPE="${MBL_ROOT_FSTYPE}" \
