@@ -40,12 +40,14 @@ class ExitCode(enum.Enum):
     CTRLC = 1
     ERROR = 2
 
+
 class JobStatusCode(enum.Enum):
     """Job status codes."""
 
     SUCCESS = 0
     NOT_FINISHED = 1
     FAILURE = 2
+
 
 class LAVATemplates(object):
     """LAVA templates class."""
@@ -171,7 +173,9 @@ class LAVAServer(object):
     def check_job_status(self, job_id):
         """Given a job ID, return its status (waiting, passed, failed)."""
         return_value = JobStatusCode.SUCCESS.value
-        results = yaml.safe_load(self.connection.results.get_testjob_results_yaml(job_id))
+        results = yaml.safe_load(
+            self.connection.results.get_testjob_results_yaml(job_id)
+        )
         if len(results) == 0:
             return JobStatusCode.NOT_FINISHED.value
         for result in results:
@@ -425,9 +429,35 @@ def _enable_debug_logging(debug=False):
     logger.setLevel(logging_level)
 
 
+def poll_result(poll_retries, poll_interval, job_ids, lava_server):
+    """Poll result of the given job ids."""
+    i = 0
+    error_occurred = False
+    while i < poll_retries:
+        time.sleep(poll_interval)
+        logging.debug("Polling for test results")
+        for job_id in job_ids:
+            status = lava_server.check_job_status(job_id)
+            if status != JobStatusCode.NOT_FINISHED.value:
+                job_ids.remove(job_id)
+                if status != JobStatusCode.SUCCESS.value:
+                    logging.error("Job %s failed", job_id)
+                    error_occurred = True
+                else:
+                    logging.info("Job %s succeeded", job_id)
+        if len(job_ids) == 0 and error_occurred is False:
+            logging.debug("Finished polling jobs, all succeeded")
+            return ExitCode.SUCCESS.value
+        elif len(job_ids) == 0 and error_occurred is True:
+            logging.debug("Finished polling jobs, failures detected")
+            return ExitCode.SUCCESS.value
+        i += 1
+    logging.debug("Finished polling jobs, max retries reached")
+    return ExitCode.ERROR.value
+
+
 def _main(args):
     """Perform the main execution of the application."""
-    return_value = ExitCode.SUCCESS.value
     try:
         # Get all the arguments
         args = _parse_arguments(args)
@@ -467,32 +497,17 @@ def _main(args):
         job_ids = []
         for lava_job in lava_jobs:
             # Submit the job to LAVA
-            new_job_ids = lava_server.submit_job(lava_job)
+            submitted_job_ids = lava_server.submit_job(lava_job)
             # Get the IDs and print the job info urls
-            job_id_urls = lava_server.get_job_urls(new_job_ids)
+            job_id_urls = lava_server.get_job_urls(submitted_job_ids)
             for job_id_url in job_id_urls:
                 logging.info("Job submitted: {}".format(job_id_url))
-            job_ids.extend(new_job_ids)
+            job_ids.extend(submitted_job_ids)
 
         if args.poll_result:
-            for i in range(0, args.poll_retries):
-                time.sleep(args.poll_interval)
-                logging.debug("Polling for test results")
-                for job_id in job_ids:
-                    status = lava_server.check_job_status(job_id)
-                    if status != JobStatusCode.NOT_FINISHED.value:
-                        job_ids.remove(job_id)
-                        if status != JobStatusCode.SUCCESS.value:
-                            logging.error("Job %s failed", job_id)
-                            return_value = ExitCode.ERROR.value
-                        else:
-                            logging.info("Job %s succeeded", job_id)
-                if len(job_ids) == 0:
-                    logging.debug("Finished polling jobs")
-                    break
-                if i + 1 == args.poll_retries:
-                    logging.error("Maximum result poll retries reached, still running jobs: %s", job_ids)
-                    return_value = ExitCode.ERROR.value
+            return poll_result(
+                args.poll_retries, args.poll_interval, job_ids, lava_server
+            )
 
     except KeyboardInterrupt:
         logging.error("Ctrl-C detected. Stopping.")
@@ -504,7 +519,7 @@ def _main(args):
 
             traceback.print_exc()
         return ExitCode.ERROR.value
-    return return_value
+    return ExitCode.SUCCESS.value
 
 
 if __name__ == "__main__":
